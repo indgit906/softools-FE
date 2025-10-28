@@ -1,0 +1,227 @@
+<div class="allProducts mt-2">
+  <div
+    class="d-flex flex-wrap justify-content-around align-items-center gap-2 p-2 bg-light rounded"
+  >
+    <input
+      type="text"
+      class="form-control w-25"
+      [(ngModel)]="searchText"
+      (ngModelChange)="currentPage.set(1)"
+      (click)="
+        changeFilter({
+          searchText: searchText
+        })
+      "
+      placeholder="Search products..."
+    />
+
+    <div class="d-flex align-items-center gap-2 w-25">
+      <label for="priceRange" class="form-label mb-0">Min ₹0</label>
+      <input
+        type="range"
+        class="form-range"
+        id="priceRange"
+        min="0"
+        max="10000"
+        step="100"
+        (click)="
+          changeFilter({
+            maxPrice: priceRange
+          })
+        "
+        [(ngModel)]="priceRange"
+        (ngModelChange)="currentPage.set(1)"
+      />
+      <label for="priceRange" class="form-label mb-0"
+        >Max ₹{{ priceRange }}</label
+      >
+    </div>
+  </div>
+  <div
+    class="d-flex scroll-chips container overflow-auto gap-2 py-2 px-3 bg-light rounded"
+    style="white-space: nowrap"
+  >
+    <button
+      type="button"
+      class="btn btn-outline-dark btn-sm ms-5"
+      [ngClass]="{ active: selectedCategoryId === 0 }"
+      (click)="
+        changeFilter({
+          categoryId: (selectedCategoryId = 0)
+        })
+      "
+    >
+      All
+    </button>
+
+    <button
+      *ngFor="let category of categories"
+      type="button"
+      class="btn btn-outline-dark btn-sm"
+      [value]="category.categoryId"
+      [ngClass]="{ active: selectedCategoryId === category.categoryId }"
+      (click)="
+        changeFilter({
+          categoryId: category.categoryId
+        })
+      "
+    >
+      {{ category.categoryName }}
+    </button>
+  </div>
+
+  <div class="container mt-2 py-2">
+    <div class="row g-3">
+      @for (item of paginatedProducts; track $index){
+      <div class="col-12 col-md-6 col-lg-4 mb-4">
+        <div class="product-card">
+          <a class="transcend">
+            <span class="badge text-bg-primary top-0 end-50">{{
+              item.discount
+            }}</span>
+            <div class="card-body text-center">
+              <img
+                src="{{ item.imageUrl }}"
+                class="img-fluid rounded product-image"
+                (click)="description(item.productId)"
+                alt="{{ item.title }}"
+              />
+            </div>
+          </a>
+        </div>
+        <p class="link text-center mt-3">
+          <a (click)="description(item.productId)" class="transcend">{{
+            item.title
+          }}</a>
+        </p>
+        <div class="d-flex flex-column align-items-center">
+          <p class="price text-center mb-2">
+            <a class="transcend">
+              <span>{{ item.oldPriceStr }}</span
+              >{{ item.priceStr }}
+            </a>
+          </p>
+          <button
+            class="btn bg-primary cart-button text-white"
+            type="button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvasCart"
+            aria-controls="offcanvasCart"
+            (click)="openCart(item)"
+          >
+            <span class="text-center">Add to Cart</span>
+          </button>
+        </div>
+      </div>
+
+      }
+      <div
+        class="offcanvas bg-primary-subtle offcanvas-start"
+        tabindex="-1"
+        id="offcanvasCart"
+        aria-labelledby="offcanvasCartLabel"
+      >
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="offcanvasCartLabel">Cart</h5>
+
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="offcanvas"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="offcanvas-body">
+          <div>
+            <hr />
+            @for (item of cartItems; track $index) {
+            <div class="pb-3">
+              @if (item.imageUrl) {
+              <img
+                [src]="item.imageUrl"
+                class="img-fluid contain-image float-start pb-2 rounded"
+                alt="{{ item.title }}"
+              />
+              }
+              <p class="text-center">
+                <strong>{{ item.title }}</strong>
+              </p>
+              <div
+                class="d-flex justify-content-center align-items-center my-2"
+                role="group"
+              >
+                <button
+                  class="btn btn-sm btn-outline-secondary"
+                  (click)="cartService.decrementQuantity($index)"
+                >
+                  −
+                </button>
+                <span class="btn btn-sm btn-outline-secondary text-dark">{{
+                  item.quantity
+                }}</span>
+                <button
+                  class="btn btn-sm btn-outline-secondary"
+                  (click)="cartService.incrementQuantity($index)"
+                >
+                  +
+                </button>
+              </div>
+              <div class="d-flex justify-content-end">
+                <span class="text-muted">
+                  ₹{{ (item.quantity * item.numericPrice).toFixed(2) }}
+                </span>
+              </div>
+            </div>
+
+            }
+            <hr />
+            <ng-template #emptyCart>
+              <p>Your cart is empty.</p>
+            </ng-template>
+          </div>
+          <div class="d-flex justify-content-between border-top pt-2">
+            <strong>Subtotal:</strong>
+            <span
+              ><strong
+                >₹{{ cartService.getSubtotal().toFixed(2) }}</strong
+              ></span
+            >
+          </div>
+        </div>
+        <div class="mt-4 d-grid">
+          <button
+            class="btn btn-success mb-2"
+            (click)="Checkout()"
+            data-bs-dismiss="offcanvas"
+            routerLink="../../app/checkout"
+          >
+            Proceed to Checkout
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <nav class="mt-4 d-flex justify-content-center">
+      <ul class="pagination">
+        <li class="page-item" [class.disabled]="currentPage() === 1">
+          <a class="page-link" (click)="changePage(currentPage() - 1)"
+            >Previous</a
+          >
+        </li>
+
+        <li
+          class="page-item"
+          *ngFor="let page of totalPagesArray"
+          [class.active]="page === currentPage()"
+        >
+          <a class="page-link" (click)="changePage(page)">{{ page }}</a>
+        </li>
+
+        <li class="page-item" [class.disabled]="currentPage() === totalPages">
+          <a class="page-link" (click)="changePage(currentPage() + 1)">Next</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>

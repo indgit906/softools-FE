@@ -1,0 +1,292 @@
+<div class="container-fluid py-3">
+  <!-- ORDERS SECTION -->
+  @if (currentView === 'orders') {
+  <div class="row g-3 mb-4">
+    <div class="col-12 col-md-4">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Search by Name"
+        [(ngModel)]="filters.name"
+        (input)="applyFilters()"
+      />
+    </div>
+
+    <div class="col-12 col-md-4">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Search by Email"
+        [(ngModel)]="filters.email"
+        (input)="applyFilters()"
+      />
+    </div>
+
+    <div class="col-12 col-md-4">
+      <select
+        class="form-select"
+        [(ngModel)]="filters.status"
+        (change)="applyFilters()"
+      >
+        <option value="">All Statuses</option>
+        <option value="PLACED">PLACED</option>
+        <option value="FULFILLED">FULFILLED</option>
+        <option value="CANCELLED">CANCELLED</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-hover table-bordered text-center">
+      <thead class="table-light">
+        <tr>
+          <th>Order ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Total</th>
+          <th>Transaction Id</th>
+          <th>Status</th>
+          <th>Details</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (order of paginated; track order.orderId) {
+        <tr>
+          <td>{{ order.orderId }}</td>
+          <td>{{ order.name }}</td>
+          <td>{{ order.email }}</td>
+          <td>{{ order.phone }}</td>
+          <td>₹{{ order.totalAmt }}</td>
+          <td>{{ order.transactionRef }}</td>
+          <td>
+            <select
+              class="form-select"
+              [(ngModel)]="order.orderStatus"
+              (ngModelChange)="updateOrderStatus(order.orderId, $event)"
+            >
+              <option value="PLACED">PLACED</option>
+              <option value="FULFILLED">FULFILLED</option>
+              <option value="CANCELLED">CANCELLED</option>
+            </select>
+          </td>
+          <td (click)="toggleExpand(order.orderId)" style="cursor: pointer">
+            <span class="badge bg-info">View Details</span>
+          </td>
+        </tr>
+
+        <tr *ngIf="expandedOrderId === order.orderId" class="bg-light">
+          <td colspan="8">
+            <div class="p-2 text-start">
+              <h6 class="fw-bold">Order Details:</h6>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered">
+                  <thead>
+                    <tr>
+                      <th>Product ID</th>
+                      <th>Title</th>
+                      <th>Quantity</th>
+                      <th>Price</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (detail of order.orderDetails; track detail.orderDtlId)
+                    {
+                    <tr>
+                      <td>{{ detail.productId }}</td>
+                      <td>{{ detail.title }}</td>
+                      <td>{{ detail.quantity }}</td>
+                      <td>₹{{ detail.price }}</td>
+                    </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- PAGINATION -->
+  <nav class="mt-4 d-flex justify-content-center">
+    <ul class="pagination flex-wrap">
+      <li class="page-item" [class.disabled]="currentPage === 1">
+        <a class="page-link btn" (click)="changePage(currentPage - 1)"
+          >Previous</a
+        >
+      </li>
+      <li
+        class="page-item"
+        *ngFor="let page of totalPagesArray"
+        [class.active]="page === currentPage"
+      >
+        <a class="page-link btn" (click)="changePage(page)">{{ page }}</a>
+      </li>
+      <li class="page-item" [class.disabled]="currentPage === totalPages">
+        <a class="page-link btn" (click)="changePage(currentPage + 1)">Next</a>
+      </li>
+    </ul>
+  </nav>
+  }
+
+  <!-- PRODUCTS SECTION -->
+  @else if (currentView === 'products') {
+  <div class="card mb-4">
+    <div class="card-header bg-secondary text-white">Product List</div>
+    <div class="card-body table-responsive">
+      <table class="table table-bordered table-hover">
+        <thead class="table-light">
+          <tr>
+            <th>Product Id</th>
+            <th>Title</th>
+            <th>Old Price</th>
+            <th>Discount</th>
+            <th>Discounted Price</th>
+            <th>ImageUrl</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (data of products; track $index) {
+          <tr>
+            <td>{{ data.productId }}</td>
+            <td>{{ data.title }}</td>
+            <td>{{ data.oldPriceStr }}</td>
+            <td>{{ data.discount }}</td>
+            <td>{{ data.numericPrice }}</td>
+            <td>
+              <img
+                src="{{ data.imageUrl }}"
+                width="100px"
+                height="100px"
+                alt="{{ data.title }}"
+              />
+            </td>
+            <td>
+              <button
+                class="btn d-block mb-2 btn-success btn-sm"
+                (click)="onEdit(data)"
+              >
+                Edit
+              </button>
+              <button
+                class="btn d-block btn-danger btn-sm"
+                (click)="onDelete(data.productId)"
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  }
+
+  <!-- EDIT PRODUCT FORM -->
+  @else if (currentView === 'edit') {
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+      <div class="card">
+        <div class="card-header">New Product</div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label>Product Name</label>
+            <input
+              type="text"
+              [(ngModel)]="productObj.title"
+              class="form-control"
+              placeholder="Enter Product Name"
+            />
+          </div>
+          <div class="mb-3">
+            <label>Category</label><br />
+            <select
+              name="Category"
+              [(ngModel)]="productObj.categoryId"
+              id="None"
+            >
+              <option [value]="0" disabled>--Select a Category--</option>
+              @for (item of categories; track $index) {
+              <option [value]="item.categoryId">
+                {{ item.categoryName }}
+              </option>
+              }
+            </select>
+          </div>
+          <div class="mb-3">
+            <label>Original Price</label>
+            <input
+              type="text"
+              [(ngModel)]="productObj.oldPriceStr"
+              (ngModelChange)="calculateNewPrice()"
+              class="form-control"
+              placeholder="Enter the price"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label>Discount (%)</label>
+            <input
+              type="text"
+              [(ngModel)]="productObj.discount"
+              (ngModelChange)="calculateNewPrice()"
+              class="form-control"
+              placeholder="Enter the discount"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label>New Price</label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="productObj.numericPrice"
+              readonly
+            />
+          </div>
+
+          <div class="mb-3">
+            <label>Image File</label>
+            <input
+              type="file"
+              (change)="onImageChange($event)"
+              class="form-control"
+              placeholder="Enter Image of the product"
+            />
+            <small>{{ image?.name }}</small>
+            <!-- <small>Image file size should be less than 1MB</small> -->
+          </div>
+          <div class="mb-3">
+            <label>Description</label>
+            <div class="NgxEditor__Wrapper">
+              <ngx-editor-menu [editor]="editor" [toolbar]="toolbar">
+              </ngx-editor-menu>
+              <ngx-editor
+                [editor]="editor"
+                class="form-control"
+                [(ngModel)]="productObj.description"
+                [disabled]="false"
+                [placeholder]="'Type here...'"
+              ></ngx-editor>
+            </div>
+          </div>
+          <div class="d-flex justify-content-between">
+            <button (click)="onReset()" class="btn btn-secondary">Reset</button>
+            @if (isEdit) {
+            <button (click)="onUpdate()" class="btn btn-warning">Update</button>
+            }@else{
+            <button (click)="onSave()" class="btn btn-success">Save</button>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+</div>

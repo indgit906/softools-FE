@@ -1,0 +1,39 @@
+<div class="container-fluid bg-gradient-card p-4">
+  <div class="row justify-content-center">
+    <div class="card col-lg-10 shadow">
+      <div class="card-header bg-secondary text-white">Product Description</div>
+      <div class="card-body">
+        <div class="row g-4">
+          <!-- LEFT: Image -->
+          <div class="col-md-5 text-center">
+            <img
+              src="{{ details.imageUrl }}"
+              alt="{{ details.title }}"
+              style="max-width: 100%; max-height: 70%"
+              class="img-fluid rounded product-image"
+            />
+          </div>
+
+          <!-- RIGHT: Info -->
+          <div class="col-md-7">
+            <h4 class="mb-3">{{ details.title }}</h4>
+            <p
+              [style.white-space]="'pre-line'"
+              [innerHTML]="details.description"
+            ></p>
+            <div class="mb-3">
+              <span class="text-muted text-decoration-line-through me-2">{{
+                details.oldPriceStr
+              }}</span>
+              <span class="fw-bold text-primary">{{ details.priceStr }}</span>
+            </div>
+
+            <button class="btn btn-primary col-6" (click)="addToCart()">
+              Back to Shop
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

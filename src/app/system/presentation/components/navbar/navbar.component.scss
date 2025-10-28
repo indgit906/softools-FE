@@ -1,0 +1,64 @@
+span.navbar-title {
+  white-space: nowrap;
+}
+
+@media only screen and (max-width: 767px) {
+  span.h1 {
+    display: none;
+  }
+}
+
+.footer {
+  z-index: 7; /* above most content */
+}
+
+.whatsapp-btn {
+  bottom: 1rem;
+  right: 1rem;
+  width: clamp(40px, 10vw, 70px);
+  height: clamp(40px, 10vw, 70px);
+  object-fit: contain;
+  border-radius: 50%;
+  padding: 0.25rem;
+  background-color: white; /* optional: background contrast */
+}
+
+// @media only screen and (min-width: 656px) and (max-width: 5000px) {
+//   .footer {
+//     width: 10%;
+//     height: 16%;
+//   }
+// }
+// .social-icons {
+//   position: fixed;
+//   top: 96%;
+//   right: 2%;
+//   transform: translateY(-50%);
+//   display: flex;
+//   flex-direction: column;
+//   gap: 10px;
+//   padding: 10px;
+//   z-index: 1050;
+// }
+
+// .social-icons a {
+//   background-color: #fff;
+//   color: #fff;
+//   display: inline-flex;
+//   align-items: center;
+//   justify-content: center;
+//   width: 40px;
+//   height: 40px;
+//   border-radius: 50%;
+//   text-decoration: none;
+//   transition: all 0.3s ease;
+//   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+// }
+
+// .social-icons a:hover {
+//   transform: scale(1.2);
+// }
+
+// .social-icons .whatsapp {
+//   background-color: #25d366;
+// }

@@ -1,0 +1,9 @@
+.container-fluid {
+  background-color: #eaeef3;
+}
+
+::ng-deep .NgxEditor__Content {
+  min-height: 300px;
+  max-height: 500px; /* optional: set max height */
+  overflow-y: auto;
+}

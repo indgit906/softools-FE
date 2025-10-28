@@ -1,0 +1,57 @@
+<div
+  class="card d-flex justify-content-center h-100 align-items-center bottom-100"
+>
+  <div class="card-body">
+    <h4 class="card-title">Login</h4>
+    <hr />
+    <form [formGroup]="loginForm">
+      <div class="mb-3">
+        <label for="email" class="form-label">Email address</label>
+        <input
+          type="email"
+          class="form-control"
+          [(ngModel)]="email"
+          name="email"
+          formControlName="email"
+          id="email"
+          aria-describedby="emailHelp"
+        />
+        @if (getEmail()?.invalid && (getEmail()?.touched || getEmail()?.dirty))
+        {
+        <span class="text-danger">Enter a valid email</span>
+        }
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input
+          type="password"
+          formControlName="password"
+          [(ngModel)]="password"
+          name="password"
+          class="form-control"
+          id="password"
+        />
+        @if (getPassword()?.invalid && (getPassword()?.touched ||
+        getPassword()?.dirty)) {
+        <span class="text-danger">Password is required</span>
+        }
+      </div>
+      <div class="nav-item d-inline">
+        Need an account?
+        <span
+          class="nav-link btn text-primary d-inline"
+          routerLink="../../app/register"
+          >Register</span
+        >
+      </div>
+      <button
+        type="submit"
+        [disabled]="loginForm.invalid"
+        (click)="onLogin()"
+        class="btn btn-primary d-block"
+      >
+        Login
+      </button>
+    </form>
+  </div>
+</div>

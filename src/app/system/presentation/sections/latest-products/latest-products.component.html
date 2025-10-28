@@ -1,0 +1,35 @@
+<div class="Latest-Products">
+  <header class="section-header text-center">
+    <h2 class="text-dark" id="product">Our Latest Products</h2>
+  </header>
+  <div class="container py-2">
+    <div class="row g-3">
+      @for (item of LatestProducts; track $index) { @if (item.productId > 6 &&
+      item.productId <= 12){
+      <div class="col-12 col-md-6 col-lg-4 mb-4">
+        <div class="product-card">
+          <a routerLink="/app/shop" class="transcend">
+            <span class="badge text-bg-primary">{{ item.discount }}</span>
+            <div class="card-body text-center">
+              <img
+                src="{{ item.imageUrl }}"
+                class="img-fluid rounded product-image"
+                alt="{{ item.title }}"
+              />
+            </div>
+          </a>
+        </div>
+        <p class="link text-center mt-3">
+          <a routerLink="/app/shop" class="transcend">{{ item.title }}</a>
+        </p>
+        <p class="price text-center">
+          <a class="transcend"
+            ><span>{{ item.oldPriceStr }}</span
+            >{{ item.priceStr }}</a
+          >
+        </p>
+      </div>
+      } }
+    </div>
+  </div>
+</div>

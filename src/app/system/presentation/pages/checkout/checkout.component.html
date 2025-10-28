@@ -1,0 +1,147 @@
+<div class="row g-4 mx-lg-5 mx-md-3 mx-sm-2">
+  <!-- Billing Form -->
+  <div class="col-lg-7 col-md-12">
+    <h4 class="mb-4">
+      Billing Details
+      <span class="h6 float-end">
+        <a class="text-primary text-decoration-none" routerLink="../../app/cart"
+          >&lt; Back to cart</a
+        >
+      </span>
+    </h4>
+    <form [formGroup]="newForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="firstname" class="form-label">First Name</label>
+          <input
+            type="text"
+            class="form-control"
+            id="firstname"
+            [(ngModel)]="details.firstName"
+            formControlName="firstName"
+            placeholder="Enter your first name"
+            [ngClass]="{
+              'is-invalid':
+                newForm.get('firstName')?.invalid &&
+                newForm.get('firstName')?.touched
+            }"
+          />
+          @if (newForm.get('firstName')?.invalid &&
+          newForm.get('firstName')?.touched) {
+          <span class="invalid-feedback">This field cannot be empty.</span>
+          }
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label for="lastname" class="form-label">Last Name</label>
+          <input
+            type="text"
+            class="form-control"
+            id="lastname"
+            [(ngModel)]="details.lastName"
+            formControlName="lastName"
+            placeholder="Enter your last name"
+            [ngClass]="{
+              'is-invalid':
+                newForm.get('lastName')?.invalid &&
+                newForm.get('lastName')?.touched
+            }"
+          />
+          @if (newForm.get('lastName')?.invalid &&
+          newForm.get('lastName')?.touched) {
+          <span class="invalid-feedback">This field cannot be empty.</span>
+          }
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input
+          type="email"
+          class="form-control"
+          id="email"
+          [(ngModel)]="details.email"
+          formControlName="email"
+          placeholder="Enter your email"
+          [ngClass]="{
+            'is-invalid':
+              newForm.get('email')?.invalid && newForm.get('email')?.touched
+          }"
+        />
+        @if (newForm.get('email')?.invalid && newForm.get('email')?.touched) {
+        <span class="invalid-feedback">Enter a valid email</span>
+        }
+      </div>
+
+      <div class="mb-4">
+        <label for="phone" class="form-label">Phone</label>
+        <input
+          type="tel"
+          class="form-control"
+          id="phone"
+          [(ngModel)]="details.phone"
+          formControlName="phone"
+          placeholder="Enter your phone number"
+          [ngClass]="{
+            'is-invalid':
+              newForm.get('phone')?.invalid && newForm.get('phone')?.touched
+          }"
+        />
+        @if (newForm.get('phone')?.invalid && newForm.get('phone')?.touched) {
+        <span class="invalid-feedback">Enter a phone number</span>
+        }
+      </div>
+
+      <button
+        class="btn btn-primary w-100 fs-5 mt-2 mb-4"
+        type="submit"
+        data-bs-toggle="modal"
+        data-bs-target="#payment"
+        (click)="goToFinal()"
+        [disabled]="newForm.invalid"
+      >
+        Proceed to Payment
+      </button>
+    </form>
+  </div>
+
+  <!-- Checkout Summary -->
+  <div class="col-lg-5 col-md-12">
+    <div class="card shadow-sm">
+      <div class="card-header text-center">
+        <h4 class="mb-0">Checkout</h4>
+      </div>
+      <div class="card-body">
+        @for (item of cartItems; track $index) {
+        <div class="d-flex align-items-start mb-3">
+          <div class="position-relative me-3">
+            <img
+              src="{{ item.imageUrl }}"
+              class="img-fluid rounded"
+              style="width: 100px; height: auto"
+              alt="{{ item.title }}"
+            />
+            <span
+              class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning"
+              style="font-size: 0.75rem"
+            >
+              {{ item.quantity }}
+            </span>
+          </div>
+          <div class="flex-grow-1">
+            <p class="mb-1 fw-bold">{{ item.title }}</p>
+            <p class="mb-0">
+              ₹{{ (item.quantity * item.numericPrice).toFixed(2) }}
+            </p>
+          </div>
+        </div>
+        }
+
+        <hr />
+        <div class="text-end fw-bold">
+          Total: ₹{{ cartService.getSubtotal().toFixed(2) }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

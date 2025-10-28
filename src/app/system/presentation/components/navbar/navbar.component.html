@@ -1,0 +1,174 @@
+<div class="bg-primary text-white sticky-top">
+  <nav class="navbar navbar-expand-lg navbar-dark py-1">
+    <div
+      class="container-fluid d-flex justify-content-between align-items-center"
+    >
+      <div class="d-flex flex-column align-items-start">
+        <img
+          src="assets/images/logo.png"
+          alt="Softools Logo"
+          class="img-fluid d-inline"
+          style="max-width: 60px; height: auto"
+        />
+        <a class="navbar-brand p-0 m-0 d-inline" href="#">
+          <span
+            class="small text-light text-nowrap text-lg-wrap"
+            style="max-width: 170px"
+          >
+            Affordable Softwares
+          </span>
+        </a>
+      </div>
+      <span
+        class="navbar-title position-absolute top-50 start-50 translate-middle h1 fw-bolder text-white"
+      >
+        Softoolshop
+      </span>
+
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#offcanvasNavbarLabel"
+        aria-controls="offcanvasNavbar"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div
+        class="offcanvas offcanvas-end bg-primary text-white"
+        tabindex="-1"
+        id="offcanvasNavbarLabel"
+        aria-labelledby="offcanvasNavbarLabel"
+      >
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="offcanvasNavbar">Softools</h5>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            data-bs-dismiss="offcanvas"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="offcanvas-body">
+          <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+            <li class="nav-item">
+              <a
+                class="nav-link text-white"
+                data-bs-dismiss="offcanvas"
+                routerLink="app/home"
+                >Home</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link text-white"
+                data-bs-dismiss="offcanvas"
+                routerLink="app/shop"
+                >Shop</a
+              >
+            </li>
+            @if (isLoggedIn()) {
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle text-dark"
+                role="button"
+                routerLink="../../app/admin"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Admin
+              </a>
+              <ul class="dropdown-menu bg-primary-subtle">
+                <li>
+                  <a
+                    class="dropdown-item btn bg-primary-subtle"
+                    (click)="navigateTo('orders')"
+                    >Orders</a
+                  >
+                </li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                  <a
+                    class="dropdown-item btn bg-primary-subtle"
+                    (click)="navigateTo('products')"
+                    >View Products</a
+                  >
+                </li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                  <a
+                    class="dropdown-item btn bg-primary-subtle"
+                    (click)="navigateTo('edit')"
+                    >Add Products</a
+                  >
+                </li>
+              </ul>
+            </li>
+            }@else {
+            <li class="nav-item">
+              <a
+                class="nav-link text-white"
+                data-bs-dismiss="offcanvas"
+                routerLink="app/cart"
+                ><i class="bi bi-cart"></i>Cart</a
+              >
+            </li>
+            }
+            <li class="nav-item">
+              <a
+                class="nav-link text-white"
+                data-bs-dismiss="offcanvas"
+                routerLink="app/about-us"
+                >About Us</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link text-white"
+                data-bs-dismiss="offcanvas"
+                routerLink="app/home"
+                fragment="contact"
+                >Contact Us</a
+              >
+            </li>
+            <li class="nav-item">
+              @if ( isLoggedIn()) {
+
+              <a
+                class="nav-link btn btn-dark bg-danger text-light"
+                routerLink="../../app/home"
+                data-bs-dismiss="offcanvas"
+                (click)="logout()"
+                >Logout</a
+              >
+              }@else {
+              <a
+                class="nav-link btn btn-dark bg-primary-subtle text-dark"
+                routerLink="../../app/login"
+                data-bs-dismiss="offcanvas"
+                >Login</a
+              >
+              }
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+</div>
+<div class="footer">
+  <img
+    src="../../../../../assets/images/whatsapp.png"
+    class="whatsapp-btn position-fixed img-fluid btn"
+    (click)="openWhatsApp()"
+    alt="Contact me through whatsapp: 917019881960"
+  />
+
+  <!-- <div class="social-icons">
+    <a (click)="openWhatsApp()" class="whatsapp" target="_blank"
+      ><i class="bi bi-whatsapp"></i
+    ></a>
+  </div> -->
+</div>

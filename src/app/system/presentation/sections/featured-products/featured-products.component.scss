@@ -1,0 +1,74 @@
+/*--------------------------------------------------------------
+  #Products Card
+  --------------------------------------------------------------*/
+  .Featured-Products {
+      margin-top: 2rem;
+  }
+/* Maintain consistent aspect ratio (square card) */
+.product-card {
+    aspect-ratio: 1 / 1;
+    /* or 4 / 3, 16 / 9 etc */
+    overflow: hidden;
+    background-color: #cce9f5;
+    border-radius: 10px;
+    box-shadow: 10px 10px 8px rgba(0, 0, 0, 0.1),
+        -10px -10px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Ensure card-body fills the card and centers content */
+.product-card .card-body {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Make image responsive and contained */
+.product-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+li {
+    list-style: none;
+}
+
+p.link a {
+    color: #313131;
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+p.price a {
+    font-weight: 600;
+    font-size: 1.2rem;
+    text-decoration: none;
+    color: #3b3a3a;
+}
+
+p.price span {
+    color: #b9babd;
+    font-weight: 600;
+    text-decoration: line-through;
+    margin-right: 2%;
+}
+
+span.badge {
+    background-color: #4154f1;
+    color: #fff;
+    width: 18%;
+    text-align: center;
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+a.link:hover,
+a.price:hover {
+    color: #4154f1;
+    text-decoration: none;
+}

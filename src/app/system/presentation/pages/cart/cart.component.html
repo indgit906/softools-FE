@@ -1,0 +1,79 @@
+@if (cartItems.length == 0) {
+<div class="text-center my-5">
+  <a class="btn btn-outline-primary d-inline-block" routerLink="../../app/shop">
+    Continue Shopping
+    <img
+      src="../../../../../assets/images/on-way.png"
+      class="img-fluid mt-2"
+      style="max-width: 200px"
+      alt="Continue_shopping"
+    />
+  </a>
+</div>
+} @else {
+<div class="container-fluid mt-5">
+  <div class="row g-4">
+    <!-- Cart Items -->
+    <div class="col-lg-8 col-md-7 col-sm-12">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-bordered align-middle text-center">
+              <thead class="table-light">
+                <tr>
+                  <th>Product</th>
+                  <th>Price</th>
+                  <th>Quantity</th>
+                  <th>Subtotal</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of cartItems; track $index) {
+                <tr>
+                  @if (item.imageUrl) {
+                  <td class="text-start">
+                    <div class="d-flex align-items-center">
+                      <img
+                        src="{{ item.imageUrl }}"
+                        class="img-thumbnail me-2"
+                        style="max-width: 80px"
+                        alt="{{ item.title }}"
+                      />
+                      <span>{{ item.title }}</span>
+                    </div>
+                  </td>
+                  }
+                  <td>₹{{ item.numericPrice }}</td>
+                  <td>{{ item.quantity }}</td>
+                  <td>₹{{ (item.quantity * item.numericPrice).toFixed(2) }}</td>
+                </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary Panel -->
+    <div class="col-lg-4 col-md-5 col-sm-12">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="fw-bold mb-4">Order Summary</h5>
+          <div class="d-flex justify-content-between mb-3">
+            <span>Subtotal</span>
+            <span>₹{{ cartService.getSubtotal().toFixed(2) }}</span>
+          </div>
+          <button
+            type="button"
+            class="btn btn-primary w-100 mt-3"
+            routerLink="../../app/checkout"
+          >
+            Proceed to Checkout
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+}
