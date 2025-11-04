@@ -1,88 +1,78 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'node:18'
+            args '-u root:root' // optional if you need root for npm installs
+        }
+    }
 
     environment {
-        // Docker Hub credentials (username + password)
-        DOCKER_HUB_CREDS = credentials('docker-hub-creds') 
-        IMAGE_NAME = "inddocker786/softools-fe"
-        TAG = "latest"
+        DOCKERHUB_CRED = credentials('dockerhubcred') // your Jenkins credential ID
+        IMAGE_NAME = 'inddocker786/softools-fe'
+        IMAGE_TAG = 'latest'
     }
 
     stages {
+
         stage('Checkout') {
             steps {
-                echo "🔄 Checking out code from GitHub..."
+                echo '🔄 Checking out code from GitHub...'
                 git branch: 'main', url: 'https://github.com/indgit906/softools-fe.git'
-            }
-        }
-
-        stage('Setup Node.js') {
-            steps {
-                echo "📦 Setting up Node.js environment..."
-                // Install dependencies if node is not installed
-                sh '''
-                if ! command -v node > /dev/null; then
-                    echo "Node.js not found. Installing..."
-                    curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
-                    apt-get install -y nodejs
-                fi
-                node -v
-                npm -v
-                '''
             }
         }
 
         stage('Build Frontend') {
             steps {
-                echo "🧹 Cleaning old dependencies..."
-                sh 'rm -rf node_modules package-lock.json dist'
-                
-                echo "📦 Installing dependencies..."
-                sh 'npm install'
-                
-                echo "🚀 Building frontend..."
-                sh 'npm run build'
+                echo '📦 Installing dependencies and building frontend...'
+                sh '''
+                    npm install
+                    npm run build
+                '''
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                echo "🐳 Building Docker image..."
-                sh "docker build -t ${IMAGE_NAME}:${TAG} ."
+                echo '🐳 Building Docker image...'
+                sh """
+                    docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
+                """
             }
         }
 
         stage('Push Docker Image') {
             steps {
-                echo "📤 Pushing Docker image to Docker Hub..."
-                withDockerRegistry([credentialsId: 'docker-hub-creds', url: '']) {
-                    sh "docker push ${IMAGE_NAME}:${TAG}"
+                echo '📤 Pushing Docker image to Docker Hub...'
+                withCredentials([usernamePassword(credentialsId: 'dockerhubcred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh """
+                        echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                        docker push ${IMAGE_NAME}:${IMAGE_TAG}
+                    """
                 }
             }
         }
 
         stage('Deploy to Kubernetes') {
             steps {
-                echo "☸️ Deploying to Kubernetes..."
-                // Example kubectl command (adjust your context & deployment)
+                echo '🚀 Deploying to Kubernetes...'
                 sh '''
-                kubectl set image deployment/softools-fe softools-fe=${IMAGE_NAME}:${TAG} --record
-                kubectl rollout status deployment/softools-fe
+                    kubectl apply -f k8s/deployment.yaml
+                    kubectl rollout status deployment/softools-fe
                 '''
             }
         }
     }
 
     post {
+        always {
+            echo '🧹 Cleaning workspace...'
+            cleanWs()
+        }
         success {
-            echo "✅ Pipeline completed successfully!"
+            echo '✅ Pipeline completed successfully!'
         }
         failure {
-            echo "❌ Pipeline failed!"
-        }
-        always {
-            echo "🧹 Cleaning workspace..."
-            cleanWs()
+            echo '❌ Pipeline failed!'
         }
     }
 }
