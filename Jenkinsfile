@@ -18,7 +18,6 @@ pipeline {
             steps {
                 script {
                     docker.image('node:18-alpine').inside {
-                        // Clean up old files before installing
                         sh '''
                             echo "🧹 Cleaning old dependencies..."
                             rm -rf node_modules package-lock.json dist
@@ -63,7 +62,6 @@ pipeline {
 
     post {
         always {
-            // Clean workspace after each run
             cleanWs()
         }
     }
