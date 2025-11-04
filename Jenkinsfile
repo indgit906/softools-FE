@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         NODE_VERSION = '18'
-        DOCKER_CREDENTIALS = 'dockerhubcred'
+        DOCKER_CREDENTIALS = 'docker-hub-creds'
     }
 
     stages {
