@@ -21,6 +21,10 @@ pipeline {
                         sh '''
                             echo "🧹 Cleaning old dependencies..."
                             rm -rf node_modules package-lock.json dist
+                            
+                            # Use a local npm cache inside the workspace
+                            export npm_config_cache=$WORKSPACE/.npm
+                            
                             npm cache clean --force
                             echo "📦 Installing dependencies..."
                             npm install
@@ -62,6 +66,7 @@ pipeline {
 
     post {
         always {
+            // Clean workspace after each run
             cleanWs()
         }
     }
