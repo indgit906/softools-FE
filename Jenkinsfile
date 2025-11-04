@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         NODE_VERSION = '18'
-        DOCKER_CREDENTIALS = 'dockerhubcred' // DockerHub credentials ID
+        DOCKER_CREDENTIALS = 'dockerhubcred'
     }
 
     stages {
@@ -16,7 +16,6 @@ pipeline {
         stage('Build & Test in Docker') {
             steps {
                 script {
-                    // Pull Node image and run commands inside
                     docker.withRegistry('', env.DOCKER_CREDENTIALS) {
                         docker.image("node:${env.NODE_VERSION}").inside('-u 116:123') {
                             sh 'npm install'
@@ -31,10 +30,8 @@ pipeline {
 
     post {
         always {
-            node { // Needed for cleanWs()
-                echo '🧹 Cleaning workspace...'
-                cleanWs()
-            }
+            echo '🧹 Cleaning workspace...'
+            cleanWs()
         }
         success {
             echo '✅ Pipeline succeeded!'
